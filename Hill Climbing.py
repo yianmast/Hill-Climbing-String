@@ -7,7 +7,7 @@
 #
 #               score(solution) evaluates how good the solution is and return the score
 #
-#               muteta(solution) #mutates/changes a solution 'slightly', i.e. only 1 character
+#               mutate(solution) #mutates/changes a solution 'slightly', i.e. only 1 character
 #
 #Author:    Ioannis Mastoras
 #
