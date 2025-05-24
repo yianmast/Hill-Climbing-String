@@ -1,19 +1,31 @@
-#--------------------------------------------------------------------------------
-# Name:      Hill Climbing
-#
-#Required libs: random and string
-#
-#functions:     rs(string) genrates a random solution and returns the solution
-#
-#               score(solution) evaluates how good the solution is and return the score
-#
-#               mutate(solution) #mutates/changes a solution 'slightly', i.e. only 1 character
-#
-#Author:    Ioannis Mastoras
-#
-#Created:   16 March 2020
-#
-#-----------------------------------------------------------------------------------
+"""
+--------------------------------------------------------------------------------
+Title:     Hill Climbing: String Matcher
+Author:    Ioannis Mastoras
+Created:   16 March 2020
+Updated:   24 May 2025
+
+Description:
+    A simple implementation of the Hill Climbing algorithm to evolve a random 
+    string into a target string using mutation and score evaluation. It 
+    demonstrates the basics of optimization through iterative improvement.
+
+Functions:
+    - rs(target_str): Generates a random solution of the same length as the target string.
+    - score(solution): Evaluates how close a solution is to the target (lower is better).
+    - mutate(solution): Randomly changes one character in the solution.
+    - main(): Runs the hill climbing process and reports progress.
+
+Dependencies:
+    - Python standard library: random, string
+
+Usage:
+    Run the script and input a target string when prompted. The algorithm will
+    attempt to match the string using simple hill climbing.
+
+--------------------------------------------------------------------------------
+"""
+
 import random 
 import string
 
