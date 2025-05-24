@@ -1,135 +1,86 @@
-"""
---------------------------------------------------------------------------------
-Title:     Hill Climbing: String Matcher
-Author:    Ioannis Mastoras
-Created:   16 March 2020
-Updated:   24 May 2025
+# --------------------------------------------------------------------------------
+# Name:        Hill Climb String Matcher
+# Description: A simple implementation of the Hill Climbing algorithm to evolve
+#              a random string into a user-defined target string.
+#
+# Author:      Ioannis Mastoras
+# Created:     16 March 2020
+# Updated:     May 2025
+#
+# Requirements: Python Standard Library (random, string)
+# --------------------------------------------------------------------------------
 
-Description:
-    A simple implementation of the Hill Climbing algorithm to evolve a random 
-    string into a target string using mutation and score evaluation. It 
-    demonstrates the basics of optimization through iterative improvement.
-
-Functions:
-    - rs(target_str): Generates a random solution of the same length as the target string.
-    - score(solution): Evaluates how close a solution is to the target (lower is better).
-    - mutate(solution): Randomly changes one character in the solution.
-    - main(): Runs the hill climbing process and reports progress.
-
-Dependencies:
-    - Python standard library: random, string
-
-Usage:
-    Run the script and input a target string when prompted. The algorithm will
-    attempt to match the string using simple hill climbing.
-
---------------------------------------------------------------------------------
-"""
-
-import random 
+import random
 import string
 
+# List of all printable ASCII characters (letters, digits, punctuation, whitespace, etc.)
+CHARACTER_POOL = list(string.printable)
 
 
-characters = [] #a list with all characters
-
-for ch in string.printable:   # String of ASCII characters which are considered printable.
-                              #This is a combination of digits, ascii_letters, punctuation, and whitespace.
-    characters.append(ch)
-    
-
-def rs(string): #generate random solution
-
-    rand_solution = []
-
-    c = 0 #count
-    while c < len(string):
-
-        rand_solution.append(random.choice(characters)) #choses a random character and puts it in the list.
-                                                        #at the end, a new, random solution has been generated
-        c +=1
-        
-    return rand_solution
-        
-
-def score(solution): #evaluates the solution
-
-    score = len(solution) #initial value equals the length of the string
-                          #every character gives or takes 1 point
-
-    for i in range(len(solution)): #iterates through all character
-
-        if solution[i] == target[i]:
-
-            score -= 1  #substract a point, since we want to go to 0
-    return score
-
- 
-
-def mutate(solution): #mutates a solution 'slightly', i.e. only 1 character
-
-    mutated = [] #mutated solution
-
-    i = random.randint(0,len(solution)-1) #a random number for index
-
-    solution[i] = random.choice(characters) #mutate the char at that index with a random character
-
-    mutated = solution
-
-    return mutated
+def generate_random_solution(target_str):
+    """Generates a random list of characters with the same length as the target."""
+    return [random.choice(CHARACTER_POOL) for _ in range(len(target_str))]
 
 
+def calculate_score(candidate, target):
+    """Returns the number of characters that don't match the target (lower is better)."""
+    return sum(1 for i in range(len(candidate)) if candidate[i] != target[i])
+
+
+def mutate(solution):
+    """Randomly changes one character in the solution."""
+    index_to_mutate = random.randint(0, len(solution) - 1)
+    solution[index_to_mutate] = random.choice(CHARACTER_POOL)
+    return solution
+
+
+def hill_climb(target):
+    """Main hill climbing logic to evolve a random string to match the target."""
+    best = generate_random_solution(target)
+    best_score = calculate_score(best, target)
+
+    evaluated = 0
+    accepted = 0
+
+    while best_score > 0:
+        if evaluated % 500 == 0:
+            print(f"Evaluations: {evaluated} | Best score: {best_score} | Solution: {''.join(best)}")
+
+        candidate = best[:]
+        mutate(candidate)
+        candidate_score = calculate_score(candidate, target)
+
+        if candidate_score < best_score:
+            best = candidate
+            best_score = candidate_score
+            accepted += 1
+
+        evaluated += 1
+
+    print("\n✅ Target matched!")
+    print(f"Evaluations: {evaluated} | Best score: {best_score} | Solution: {''.join(best)}")
+    print(f"Number of Solutions Evaluated: {evaluated}")
+    print(f"Number of Solutions Accepted: {accepted}")
 
 
 def main():
-    
-    best = rs(target) #a random solution as best
-    best_score = score(best) #and its score
+    while True:
+        user_input = input("\n🎯 Enter target string: ")
+        if not user_input.strip():
+            print("Please enter a valid string.")
+            continue
 
-    evaluated_solutions = 0     
-    accepted_solutions = 0
-    
-    while best_score > 0: #score is zero when target string has been created
-        
-        if(evaluated_solutions-500) % 500 == 0: #Display best so far based every 500 evaluations
-            
-            print('Evaluations: ',evaluated_solutions,' | Best score: ', best_score, ' | Solution: ', "".join(best)) 
-     
-          
-        best_solution = best[:] #update/copy best_solution
-        
-        mutate(best_solution) #mutate it
-        
-        lowest_score = score(best_solution) #find its score
+        target = list(user_input)
+        hill_climb(target)
 
-        if lowest_score < best_score: #if the mutattion had a better score (lower in our case), accept it
-            
-            best_score = lowest_score  #this becomes the best_score
-            
-            best = best_solution  #and this becomes the best solution
-            
-            accepted_solutions += 1  #increase number of accepted solution
-            
-        evaluated_solutions += 1 #increase number of evaluated soluitons
- 
-
-    print("\n \n", 'Evaluations: ',evaluated_solutions,' | Best score: ', best_score, ' | Solution: ', "".join(best)) 
-    print('Number of Solutions Evaluated ', evaluated_solutions)
-    print('Number of Solutions Accepted ', accepted_solutions)
-    
+        try:
+            continue_input = int(input("\n🔁 Continue? (1 = yes, 0 = no): "))
+            if continue_input == 0:
+                break
+        except ValueError:
+            print("Invalid input. Exiting.")
+            break
 
 
-
-y = 1
-while y:
-
-    t = input('\n Target String ') #user input
-
-    target = [] #list with char of target strig
-
-    for i in range(len(t)):
-    
-        target.append(t[i]) #puts every letter in the list
+if __name__ == "__main__":
     main()
-    y = int(input('\n continue? 1/0 '))
-
